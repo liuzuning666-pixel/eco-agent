@@ -225,6 +225,11 @@ label.switch input{width:auto;margin:0}
 .input-row{display:flex;gap:10px;align-items:flex-end}
 .input-row textarea{min-height:44px;max-height:140px;resize:none;line-height:1.6;border-radius:12px;padding:10px 14px}
 .composer-hint{display:flex;justify-content:space-between;font-size:.72rem;color:#93a49a;margin-top:6px;gap:10px;flex-wrap:wrap}
+.ctx{display:none;align-items:center;gap:8px;font-size:.78rem;color:var(--green);background:var(--green-3);border:1px solid #d3e8da;border-radius:999px;padding:4px 6px 4px 12px;margin-bottom:8px;width:fit-content;max-width:100%}
+.ctx.on{display:inline-flex}
+.ctx span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70vw}
+.ctx button{border:0;background:rgba(31,107,74,.12);color:var(--green);width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:.8rem;line-height:1;display:flex;align-items:center;justify-content:center}
+.ctx button:hover{background:rgba(31,107,74,.22)}
 
 .kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.82rem}
 .kv div{background:#f7faf7;border-radius:8px;padding:8px 10px}

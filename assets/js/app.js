@@ -142,6 +142,7 @@
       appendBot({
         html: '<div class="lead"><b>你好，我是青绿思享。</b>一个关于生态文明的学习智能体。</div>' +
           '<p>可以问我概念（“两山理念是什么”）、让我拆案例（“余村怎么转型的”）、帮你出测验、列讲解提纲，或者查政策时间线。</p>' +
+          '<p>也可以像聊天一样：先说“你好”，再问“举个例子”“展开说说”，我会接着上文讲。</p>' +
           '<p class="muted small">回答全部来自内置的 ' + E.KB.length + ' 条知识，每一条都标了出处。超出范围时，我会直接说“不在我的范围里”。</p>',
         steps: null
       }, false);
@@ -212,6 +213,7 @@
     save(LS.history, state.history);
     updateSessionStats();
     updateFollowUps(a);
+    updateCtxBar();
     scrollChat();
   }
 
@@ -232,6 +234,7 @@
     save(LS.history, state.history);
     updateSessionStats();
     updateFollowUps(local);
+    updateCtxBar();
     scrollChat();
   }
 
@@ -288,6 +291,24 @@
   function scrollChat() {
     var log = $('#chatLog');
     if (log) log.scrollTop = log.scrollHeight;
+  }
+
+  function updateCtxBar() {
+    var bar = $('#ctxBar');
+    if (!bar) return;
+    var c = E.getContext ? E.getContext() : null;
+    if (!c) {
+      bar.className = 'ctx';
+      bar.innerHTML = '';
+      return;
+    }
+    bar.className = 'ctx on';
+    bar.innerHTML = '<span>正在聊：' + E.esc(c.title) + '</span><button id="ctxClear" title="清空上下文" aria-label="清空上下文">×</button>';
+    var btn = $('#ctxClear');
+    if (btn) btn.addEventListener('click', function () {
+      E.clearContext();
+      updateCtxBar();
+    });
   }
 
   function updateSessionStats() {
@@ -714,6 +735,7 @@
       if (!confirm('确定清除本机的对话记录、测验成绩和设置吗？')) return;
       Object.keys(LS).forEach(function (k) { localStorage.removeItem(LS[k]); });
       state.history = []; state.quizLog = []; state.asked = 0; state.hitSet = {};
+      if (E.clearContext) E.clearContext();
       state.settings = { useLLM: false, base: '', model: '', key: '' };
       $('#chatLog').innerHTML = '';
       $('#reportBox').textContent = '已清除。';
@@ -736,6 +758,7 @@
     renderKB();
     updateSessionStats();
     updateFollowUps(null);
+    updateCtxBar();
     renderSettings();
     go('home');
   }
