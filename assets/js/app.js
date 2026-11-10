@@ -45,6 +45,7 @@
     if (view === 'quiz' && !state.quiz) renderQuizIntro();
     if (view === 'settings') renderSettings();
     if (view === 'kb') renderKB();
+    if (view === 'topics') renderTopics();
     if (view === 'cases') renderCases();
     if (view === 'timeline') renderTimeline();
   }
@@ -57,20 +58,20 @@
     var s = E.stats();
     $('#stats').innerHTML = [
       { n: s.kb, l: '知识条目' },
+      { n: s.topics, l: '学习专题' },
       { n: s.cases, l: '实践案例' },
-      { n: s.quiz, l: '测验题' },
-      { n: s.timeline, l: '时间线节点' }
+      { n: s.quiz, l: '测验题' }
     ].map(function (x) {
       return '<div class="stat"><div class="n">' + x.n + '</div><div class="l">' + x.l + '</div></div>';
     }).join('');
 
     var modes = [
-      { ico: '📖', t: '概念精讲', d: '两山理念、生命共同体、五个重大关系，一句话说清，再给要点和出处。', go: 'chat', q: '两山理念的三层意思是什么？' },
-      { ico: '🏞️', t: '案例拆解', d: '余村、塞罕坝、八步沙、库布其，按“做法—成效—启示”拆开讲。', go: 'cases' },
+      { ico: '📖', t: '概念问答', d: '两山理念、生态产品、双碳、法典，一句话说清，再给要点和出处。', go: 'chat', q: '两山理念的三层意思是什么？' },
+      { ico: '🧭', t: '学习专题', d: '八个专题，按“核心问题—关键概念—案例—常见误解”组织。', go: 'topics' },
+      { ico: '🏞️', t: '案例拆解', d: '余村、塞罕坝、八步沙、库布其，按“做法—机制—成效—局限”拆开讲。', go: 'cases' },
       { ico: '✅', t: '随堂测验', d: '随机 5 题，答完给解析，错题进学习报告。', go: 'quiz' },
-      { ico: '🗂️', t: '汇报提纲', d: '按“典章节时评”四环节的结构，生成带时间分配的提纲。', go: 'outline' },
-      { ico: '🕒', t: '政策时间线', d: '从 2005 年余村到 2026 年法典，一条线串起二十年。', go: 'timeline' },
-      { ico: '🔍', t: '知识库检索', d: '全部条目离线可查，按理论、制度、目标、案例、方法、辨析分类。', go: 'kb' }
+      { ico: '🗂️', t: '讲解提纲', d: '输入主题和时长，生成带时间分配、能直接照着讲的提纲。', go: 'outline' },
+      { ico: '🕒', t: '政策时间线', d: '从 2005 年余村到 2026 年法典，一条线串起二十年。', go: 'timeline' }
     ];
     $('#modeGrid').innerHTML = modes.map(function (m, i) {
       return '<button class="mode" data-mode="' + i + '"><div class="ico">' + m.ico + '</div><h4>' + m.t + '</h4><p>' + m.d + '</p></button>';
@@ -85,13 +86,13 @@
 
     var asks = [
       '两山理念的三层意思是什么？',
-      '生态环境法典为什么重要？',
-      '生态补偿是不是养懒汉？',
-      '余村是怎么完成转型的？',
-      '“双碳”会不会拖累经济？',
-      '人与自然和谐共生的现代化指什么？',
-      '“时”环节的新闻怎么分析？',
-      '美丽中国建设的三步走是什么？'
+      '什么是生态产品价值实现？',
+      '碳达峰和碳中和是什么关系？',
+      '生态环境法典为什么被称为“法典化”？',
+      '荒漠化治理有哪些中国经验？',
+      '为什么说良好生态环境是最普惠的民生福祉？',
+      '个人低碳生活有意义吗？',
+      '中国在全球生态治理中扮演什么角色？'
     ];
     $('#homeAsks').innerHTML = asks.map(function (a) {
       return '<button class="ask" data-ask="' + E.esc(a) + '">' + E.esc(a) + '</button>';
@@ -111,7 +112,7 @@
       '生态环境法典的核心内容',
       '塞罕坝的启示',
       '双碳目标的时间表',
-      '怎么准备“时”的分享'
+      '什么是生态保护红线'
     ].map(function (q) {
       return '<button class="chip" data-ask="' + E.esc(q) + '">' + E.esc(q) + '</button>';
     }).join('');
@@ -139,9 +140,9 @@
       scrollChat();
     } else {
       appendBot({
-        html: '<div class="lead"><b>你好，我是青绿思享。</b>我只讲这门课的内容：生态文明建设这一章。</div>' +
-          '<p>可以问我概念（“两山理念是什么”）、让我拆案例（“余村怎么转型的”）、帮你出测验、列课堂分享提纲，或者查政策时间线。</p>' +
-          '<p class="muted small">回答全部来自内置的 ' + E.KB.length + ' 条知识，每一条都标了出处。没有把握的地方，我会说“不知道”。</p>',
+        html: '<div class="lead"><b>你好，我是青绿思享。</b>一个关于生态文明的学习智能体。</div>' +
+          '<p>可以问我概念（“两山理念是什么”）、让我拆案例（“余村怎么转型的”）、帮你出测验、列讲解提纲，或者查政策时间线。</p>' +
+          '<p class="muted small">回答全部来自内置的 ' + E.KB.length + ' 条知识，每一条都标了出处。超出范围时，我会直接说“不在我的范围里”。</p>',
         steps: null
       }, false);
     }
@@ -215,7 +216,7 @@
   }
 
   function finishLLM(q, local, text, started) {
-    var html = '<div class="lead"><b>大模型增强回答</b>（依据仍来自课程知识库）</div>' +
+    var html = '<div class="lead"><b>大模型增强回答</b>（依据仍来自知识库）</div>' +
       '<p class="llm-text">' + E.esc(text).replace(/\n{2,}/g, '</p><p class="llm-text">').replace(/\n/g, '<br>') + '</p>' +
       '<h4>依据</h4><ul>' + (local.hits || []).slice(0, 3).map(function (h) {
         return '<li><b>' + E.esc(h.e.title) + '</b>：' + E.esc(h.e.source || '') + '</li>';
@@ -352,7 +353,7 @@
   /* ---------------- 大模型 ---------------- */
   function callLLM(q, ctxEntries) {
     var s = state.settings;
-    var sys = '你是《新时代中国特色社会主义理论与实践》课程的学习助手，只回答生态文明建设相关内容。' +
+    var sys = '你是生态文明主题的学习助手，只回答生态文明相关内容。' +
       '必须严格依据用户提供的资料作答，不得编造条文、数字和事件；资料不足时明确说“知识库没有覆盖”。' +
       '回答用中文，分点，简洁，最后用一行注明依据来自哪份材料。';
     var ctx = (ctxEntries || []).map(function (e) {
@@ -414,6 +415,58 @@
     });
   }
 
+  /* ---------------- 专题 ---------------- */
+  function renderTopics() {
+    var list = E.TOPICS || [];
+    $('#topicGrid').innerHTML = list.map(function (t) {
+      return '<article class="topic" data-topic="' + E.esc(t.id) + '">' +
+        '<span class="k">' + E.esc(t.kicker) + '</span>' +
+        '<h4>' + E.esc(t.title) + '</h4>' +
+        '<p>' + E.esc(t.question) + '</p>' +
+        '<div class="topic-meta"><span>' + E.esc(t.level) + '</span><span>建议 ' + t.minutes + ' 分钟</span></div>' +
+        '</article>';
+    }).join('');
+    $$('#topicGrid .topic').forEach(function (el) {
+      el.addEventListener('click', function () { openTopic(el.dataset.topic); });
+    });
+  }
+
+  function openTopic(id) {
+    var t = (E.TOPICS || []).filter(function (x) { return x.id === id; })[0];
+    if (!t) return;
+    var chips = (t.ids || []).map(function (kid) {
+      var e = E.byId(kid);
+      return e ? '<span class="chip" data-entry="' + E.esc(kid) + '">' + E.esc(e.title) + '</span>' : '';
+    }).join('');
+    var cases = (t.ids || []).map(function (kid) { return E.byId(kid); }).filter(function (e) { return e && e.cat === '案例'; });
+    var html = '<h3>' + E.esc(t.title) + '</h3><span class="tag">' + E.esc(t.kicker) + '</span>' +
+      '<div class="lead">' + E.esc(t.summary) + '</div>' +
+      '<h4>核心问题</h4><p>' + E.esc(t.question) + '</p>' +
+      '<h4>关键概念</h4><div class="chips">' + chips + '</div>' +
+      (cases.length ? '<h4>相关案例</h4><div class="chips">' + cases.map(function (e) {
+        return '<span class="chip" data-entry="' + E.esc(e.id) + '">' + E.esc(e.title) + '</span>';
+      }).join('') + '</div>' : '') +
+      '<h4>常见误解</h4><ul>' + (t.misconceptions || []).map(function (m) { return '<li>' + E.esc(m) + '</li>'; }).join('') + '</ul>' +
+      '<div class="row"><button class="btn btn-primary" id="topicOutline">生成这个专题的讲解提纲</button></div>';
+    $('#modalBody').innerHTML = html;
+    $('#modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    bindEntryChips($('#modalBody'));
+    var btn = $('#topicOutline');
+    if (btn) btn.addEventListener('click', function () {
+      closeModal();
+      go('outline');
+      $('#olTopic').value = t.title;
+      $('#olMinutes').value = t.minutes || 10;
+      $('#outlineOut').innerHTML = E.outline({
+        topic: t.title,
+        minutes: t.minutes || 10,
+        audience: $('#olAudience').value,
+        depth: $('#olDepth').value
+      });
+    });
+  }
+
   /* ---------------- 案例 ---------------- */
   function renderCases() {
     var cases = E.KB.filter(function (e) { return e.cat === '案例'; });
@@ -438,7 +491,7 @@
       '<span class="tag">' + E.esc(e.cat) + '</span>' +
       '<div class="lead">' + E.esc(e.summary) + '</div>' +
       E.renderEntryBody(e) +
-      '<div class="src">出处：' + E.esc(e.source || '课程知识库') + '</div>' +
+      '<div class="src">出处：' + E.esc(e.source || '知识库') + '</div>' +
       (rel.length ? '<div class="chips">' + rel.map(function (rid) {
         var r = E.byId(rid);
         return '<span class="chip" data-entry="' + E.esc(rid) + '">' + E.esc(r.title) + '</span>';
@@ -550,14 +603,14 @@
     $('#outlineForm').addEventListener('submit', function (e) {
       e.preventDefault();
       var opt = {
-        stage: $('#olStage').value,
         topic: $('#olTopic').value,
         minutes: Number($('#olMinutes').value),
-        focus: $('#olFocus').value
+        audience: $('#olAudience').value,
+        depth: $('#olDepth').value
       };
       $('#outlineOut').innerHTML = E.outline(opt);
     });
-    $('#outlineOut').innerHTML = E.outline({ stage: '时', topic: '两山理念与余村的二十年', minutes: 8, focus: '讲清楚' });
+    $('#outlineOut').innerHTML = E.outline({ topic: '碳达峰碳中和与能源转型', minutes: 10, audience: '大学生', depth: '系统讲解' });
   }
 
   /* ---------------- 时间线 ---------------- */
@@ -572,6 +625,7 @@
   function renderSettings() {
     var s = E.stats();
     $('#aboutKb').textContent = s.kb;
+    $('#aboutTopics').textContent = s.topics;
     $('#aboutCases').textContent = s.cases;
     $('#aboutQuiz').textContent = s.quiz;
     $('#aboutTimeline').textContent = s.timeline;
@@ -581,7 +635,7 @@
     $('#llmKey').value = state.settings.key || '';
     $('#llmState').textContent = state.settings.useLLM && state.settings.key ? '已启用：回答会调用你填写的接口，Key 仅保存在本机。' : '未启用：当前使用本地知识库推理。';
     $('#engineHint').textContent = state.settings.useLLM && state.settings.key ? '当前：本地检索 + 大模型增强' : '当前：本地知识库推理';
-    $('#verLine').textContent = '版本 v1.0 · 构建于 2026-11-10 · 纯静态页面，无后端';
+    $('#verLine').textContent = '版本 v2.0 · 构建于 2026-11-10 · 纯静态页面，无后端';
     if (!$('#reportBox').dataset.filled) $('#reportBox').textContent = '点“生成报告”试试。';
   }
 
@@ -600,7 +654,7 @@
     var total = state.quizLog.length;
 
     var lines = [];
-    lines.push('使用情况（自动生成，可修改后粘贴进作业文档）');
+    lines.push('学习记录（自动生成，可复制保存）');
     lines.push('一、提问记录：共 ' + asked.length + ' 次。');
     if (asked.length) {
       asked.slice(-8).forEach(function (q, i) { lines.push('  ' + (i + 1) + '. ' + q); });
@@ -616,7 +670,7 @@
     if (wrong.length) {
       lines.push('  错题涉及：' + wrong.map(function (x) { return x.tag; }).join('、') + '。');
     }
-    lines.push('四、使用感受：这个智能体帮我把“看过的材料”变成了“讲得出来的话”。');
+    lines.push('四、小结：它把零散看过的材料，串成了一条能讲出来的线。');
     $('#reportBox').textContent = lines.join('\n');
     $('#reportBox').dataset.filled = '1';
     return lines.join('\n');
@@ -677,6 +731,7 @@
     initChat();
     initOutline();
     renderTimeline();
+    renderTopics();
     renderCases();
     renderKB();
     updateSessionStats();

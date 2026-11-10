@@ -262,6 +262,23 @@ label.switch input{width:auto;margin:0}
 .kb-item h4{font-size:.98rem;margin-bottom:6px}
 .kb-item p{font-size:.85rem;color:var(--muted);line-height:1.65;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
+/* ---------- 专题 ---------- */
+.topic-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.topic{
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;
+  box-shadow:var(--shadow);cursor:pointer;transition:.18s;position:relative;overflow:hidden;
+}
+.topic:hover{transform:translateY(-2px);box-shadow:var(--shadow-2);border-color:#cfe3d6}
+.topic::after{
+  content:"";position:absolute;right:-40px;top:-40px;width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(46,139,99,.10),transparent 70%);
+}
+.topic .k{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:999px;background:var(--green-3);color:var(--green);margin-bottom:10px}
+.topic h4{font-size:1.02rem;margin-bottom:6px}
+.topic p{font-size:.86rem;color:var(--muted);line-height:1.65;margin:0 0 12px}
+.topic-meta{display:flex;gap:14px;font-size:.74rem;color:#8a9a90}
+.topic-meta span:first-child{color:var(--gold)}
+
 /* ---------- 案例 ---------- */
 .case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .case{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);cursor:pointer;transition:.18s;position:relative;overflow:hidden}
@@ -379,6 +396,7 @@ label.switch input{width:auto;margin:0}
   .ask-grid{grid-template-columns:1fr}
   .kb-list{grid-template-columns:1fr}
   .case-grid{grid-template-columns:1fr}
+  .topic-grid{grid-template-columns:1fr}
   .chat-log{padding:14px;max-height:none}
   .bubble{font-size:.92rem}
   .modal-card{padding:22px 18px}
