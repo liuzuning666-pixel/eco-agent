@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>青绿思享 · 生态文明学习智能体</title>
+<meta name="description" content="面向《新时代中国特色社会主义理论与实践》第七章“新时代中国特色社会主义生态文明建设”的学习智能体：概念精讲、案例拆解、随堂测验、课堂分享提纲、政策时间线。">
+<meta name="theme-color" content="#0f3d2b">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+      <circle cx="24" cy="24" r="23" fill="#0f3d2b"/>
+      <path d="M24 38c0-9 5-15 13-18-1 10-5 16-13 18z" fill="#7fc9a2"/>
+      <path d="M24 38c0-9-5-15-13-18 1 10 5 16 13 18z" fill="#c9a227"/>
+      <path d="M24 38V17" stroke="#eaf5ee" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <div class="brand-text">
+      <h1>青绿思享</h1>
+      <p>生态文明学习智能体 · 第七章</p>
+    </div>
+  </div>
+
+  <nav class="tabs" id="tabs" aria-label="功能导航">
+    <button class="tab active" data-view="home">首页</button>
+    <button class="tab" data-view="chat">对话</button>
+    <button class="tab" data-view="kb">知识库</button>
+    <button class="tab" data-view="cases">案例</button>
+    <button class="tab" data-view="quiz">测验</button>
+    <button class="tab" data-view="outline">汇报提纲</button>
+    <button class="tab" data-view="timeline">时间线</button>
+    <button class="tab" data-view="settings">关于</button>
+  </nav>
+
+  <div class="status" id="status">
+    <span class="dot"></span><span id="statusText">本地知识库 · 离线可用</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= 首页 ================= -->
+  <section class="view active" id="view-home">
+    <div class="hero">
+      <div class="hero-inner">
+        <p class="hero-kicker">新时代中国特色社会主义理论与实践 · 第七章</p>
+        <h2 class="hero-title">绿水青山<span class="sep">·</span>金山银山</h2>
+        <p class="hero-desc">一个只讲课程内容的智能体：问概念、拆案例、出题、列提纲、查时间线。回答不联网也能用，每一条都标了依据出处。</p>
+        <div class="hero-actions">
+          <button class="btn btn-gold" data-jump="chat">开始对话</button>
+          <button class="btn btn-ghost" data-jump="quiz">随堂测 5 题</button>
+        </div>
+        <blockquote class="hero-quote" id="heroQuote"></blockquote>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <h3 class="section-title">它能做什么</h3>
+    <div class="mode-grid" id="modeGrid"></div>
+
+    <h3 class="section-title">不知道问什么？试试这些</h3>
+    <div class="ask-grid" id="homeAsks"></div>
+
+    <div class="notice card">
+      <h4>使用边界</h4>
+      <p>本智能体是课程学习辅助工具，知识库由公开权威材料整理而成（教材、党代会报告、中央文件、《生态环境法典》、生态环境部与新华社公开报道）。它不做时政评论，不替代老师讲授；涉及具体条文、数字时，回答里都给了出处，请以教材和官方原文为准。</p>
+    </div>
+  </section>
+
+  <!-- ================= 对话 ================= -->
+  <section class="view" id="view-chat">
+    <div class="chat-wrap">
+      <div class="chat-main">
+        <div class="chat-log" id="chatLog" aria-live="polite"></div>
+        <div class="composer">
+          <div class="chips" id="chatChips"></div>
+          <div class="input-row">
+            <textarea id="chatInput" rows="1" placeholder="问一个和生态文明有关的问题，例如：两山理念的三层意思是什么？"></textarea>
+            <button class="btn btn-primary" id="sendBtn">发送</button>
+          </div>
+          <div class="composer-hint">
+            <span>Enter 发送 · Shift+Enter 换行</span>
+            <span id="engineHint">当前：本地知识库推理</span>
+          </div>
+        </div>
+      </div>
+      <aside class="chat-side">
+        <div class="card">
+          <h3>本次学习</h3>
+          <div id="sessionStats" class="kv"></div>
+        </div>
+        <div class="card">
+          <h3>推荐追问</h3>
+          <div id="followUps" class="fup"></div>
+        </div>
+        <div class="card">
+          <h3>回答怎么来的</h3>
+          <p class="muted">每条回答下方都有“推理过程”，四步：理解问题 → 检索知识 → 组织答案 → 自检依据。点开可以看到命中了哪几条知识。</p>
+        </div>
+        <button class="btn btn-ghost btn-block" id="exportChat">导出本次对话</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= 知识库 ================= -->
+  <section class="view" id="view-kb">
+    <div class="view-head">
+      <h2>知识库</h2>
+      <p>全部条目都能离线检索。分类：理论 · 制度 · 目标路径 · 案例 · 方法 · 辨析。</p>
+    </div>
+    <div class="toolbar">
+      <input type="search" id="kbSearch" placeholder="检索条目，例如：生态保护红线、GEP、河长制">
+      <div class="cat-chips" id="kbCats"></div>
+    </div>
+    <div class="kb-count" id="kbCount"></div>
+    <div class="kb-list" id="kbList"></div>
+  </section>
+
+  <!-- ================= 案例 ================= -->
+  <section class="view" id="view-cases">
+    <div class="view-head">
+      <h2>案例库</h2>
+      <p>课堂分享最好用的部分：正面样板 + 反面镜鉴。每个案例都有“做法—成效—启示”，可以直接拿去当论据。</p>
+    </div>
+    <div class="case-grid" id="caseGrid"></div>
+  </section>
+
+  <!-- ================= 测验 ================= -->
+  <section class="view" id="view-quiz">
+    <div class="view-head">
+      <h2>随堂测验</h2>
+      <p>题库 30 题，随机抽 5 题，答完给解析。错题会在“关于”页的学习报告里体现。</p>
+    </div>
+    <div class="quiz-shell" id="quizShell"></div>
+  </section>
+
+  <!-- ================= 提纲 ================= -->
+  <section class="view" id="view-outline">
+    <div class="view-head">
+      <h2>课堂分享提纲</h2>
+      <p>按课程“典、章、时、评”四个环节的结构，输入主题和时长，生成带时间分配的提纲，并自动配上可引用的知识条目。</p>
+    </div>
+    <div class="outline-grid">
+      <form class="card form" id="outlineForm">
+        <label>哪个环节
+          <select id="olStage">
+            <option value="典">典（经典文本）</option>
+            <option value="章">章（学术文章）</option>
+            <option value="时">时（时事新闻）</option>
+            <option value="评">评（课堂评价）</option>
+          </select>
+        </label>
+        <label>主题 / 选文 / 新闻
+          <input id="olTopic" placeholder="例如：两山理念与余村的二十年" value="两山理念与余村的二十年">
+        </label>
+        <label>分享时长（分钟）
+          <input id="olMinutes" type="number" min="3" max="30" value="8">
+        </label>
+        <label>最想练的能力
+          <select id="olFocus">
+            <option value="讲清楚">讲清楚（概念与事实）</option>
+            <option value="讲出层次">讲出层次（利弊与辨析）</option>
+            <option value="讲出联系">讲出联系（理论—现实）</option>
+          </select>
+        </label>
+        <button class="btn btn-primary btn-block" type="submit">生成提纲</button>
+        <p class="muted small">生成结果可复制到 Word 里直接改。</p>
+      </form>
+      <div class="card outline-out" id="outlineOut">
+        <p class="muted">左侧填好，点“生成提纲”。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 时间线 ================= -->
+  <section class="view" id="view-timeline">
+    <div class="view-head">
+      <h2>政策时间线</h2>
+      <p>从 2005 年余村的一句话，到 2026 年一部法典。做“典”和“时”的时候，这条线能把结论串起来。</p>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <!-- ================= 关于 ================= -->
+  <section class="view" id="view-settings">
+    <div class="view-head">
+      <h2>关于这个智能体</h2>
+      <p>课程作业：我开发的智能体。作者刘祖宁，学号 2026119044，第七组（生态文明建设）。</p>
+    </div>
+
+    <div class="settings-grid">
+      <div class="card">
+        <h3>它是什么</h3>
+        <p>一个纯前端的课程学习智能体：知识库 + 检索引擎 + 回答合成 + 四项技能（精讲、案例、测验、提纲）。不联网也能跑，静态托管就能分享链接。</p>
+        <ul class="plain">
+          <li>知识条目 <b id="aboutKb">—</b> 条</li>
+          <li>案例 <b id="aboutCases">—</b> 个</li>
+          <li>题库 <b id="aboutQuiz">—</b> 题</li>
+          <li>时间线节点 <b id="aboutTimeline">—</b> 个</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>可选：接入大模型</h3>
+        <p class="muted small">默认只用本地知识库（零成本、离线、不泄露）。如果你自己有 DeepSeek 等 OpenAI 兼容接口的 Key，可以填在这里，让回答更自然。Key 只存在你自己的浏览器里，不会上传。</p>
+        <label class="switch"><input type="checkbox" id="useLLM"> 启用大模型增强</label>
+        <label>接口地址<input id="llmBase" placeholder="https://api.deepseek.com/v1/chat/completions"></label>
+        <label>模型名<input id="llmModel" placeholder="deepseek-chat"></label>
+        <label>API Key<input id="llmKey" type="password" placeholder="sk-..."></label>
+        <button class="btn btn-ghost" id="saveLLM">保存设置</button>
+        <p class="muted small" id="llmState"></p>
+      </div>
+
+      <div class="card">
+        <h3>学习报告</h3>
+        <p class="muted small">把“问过什么、覆盖了哪些知识点、测验正确率”汇总成一页文字，可以直接贴进作业说明的“使用情况”一节。</p>
+        <div id="reportBox" class="report-box"></div>
+        <div class="row">
+          <button class="btn btn-ghost" id="makeReport">生成报告</button>
+          <button class="btn btn-ghost" id="copyReport">复制</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>数据与隐私</h3>
+        <p class="muted small">对话记录、测验成绩只保存在本机浏览器（localStorage）。清除后不可恢复。</p>
+        <div class="row">
+          <button class="btn btn-danger" id="clearData">清除本机记录</button>
+        </div>
+        <p class="muted small" id="verLine"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>主要资料来源</h3>
+      <ol class="src-list">
+        <li>《新时代中国特色社会主义理论与实践（2023 年版）》第七章“新时代中国特色社会主义生态文明建设”。</li>
+        <li>党的二十大报告第十部分“推动绿色发展，促进人与自然和谐共生”。</li>
+        <li>《习近平生态文明思想学习纲要》，学习出版社、人民出版社，2022 年。</li>
+        <li>《中华人民共和国生态环境法典》，2026 年 3 月 12 日十四届全国人大四次会议通过，2026 年 8 月 15 日施行，共 5 编 1242 条（中国人大网、中国政府网、生态环境部）。</li>
+        <li>《关于全面推进美丽中国建设的意见》（2023 年 12 月）、《关于加快经济社会发展全面绿色转型的意见》（2024 年 8 月）。</li>
+        <li>生态环境部、国家林草局、新华社公开报道；新华网 2026 年 8 月 15 日第四个全国生态日主场活动报道。</li>
+      </ol>
+      <p class="muted small">本页面仅用于课程学习交流，图片与文字不用于商业用途。</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span>青绿思享 · 生态文明学习智能体</span>
+  <span>刘祖宁 · 第七组（生态文明建设） · 2026 年 11 月</span>
+</footer>
+
+<div class="modal hidden" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose" aria-label="关闭">×</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="assets/js/data/kb-theory.js"></script>
+<script src="assets/js/data/kb-system.js"></script>
+<script src="assets/js/data/kb-goal.js"></script>
+<script src="assets/js/data/kb-case.js"></script>
+<script src="assets/js/data/kb-method.js"></script>
+<script src="assets/js/data/quiz.js"></script>
+<script src="assets/js/data/timeline.js"></script>
+<script src="assets/js/data/quotes.js"></script>
+<script src="assets/js/engine.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
